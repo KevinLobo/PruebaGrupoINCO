@@ -35,15 +35,16 @@ $().ready(function () {
 
 
     var discount = 0;
+    var tax = 0;
 
     $("#discountCell").keyup(function () {
         var html = (this).innerHTML;
-        if (html == "") html = 0;
+        if (html === "" || html == "<br>") html = 0;
         discount = parseFloat(html);
+        if (discount == NaN) discount = 0;
         calculateFinalTotal();
     });
-
-
+    
 
     $("#salesInvoice tbody").on('click', '.add', function () {
         var data = tablaCompra.row($(this).parents('tr')).data();
@@ -98,9 +99,9 @@ $().ready(function () {
         var subtotal = parseFloat($("#subtotal").html())
         var finalTotalCell = $("#finalTotal");
         if (discount == 0) {
-            finalTotalCell.html(subtotal.toString());
+            finalTotalCell.html((subtotal + tax).toString());
         } else {
-            finalTotalCell.html((subtotal - (subtotal * (discount / 100))).toString());
+            finalTotalCell.html(((subtotal + tax) - ((subtotal + tax) * (discount / 100))).toString());
         }
     }
 
@@ -118,16 +119,22 @@ $().ready(function () {
         json = json.replace(/\n/g, "")
         parsedJson = JSON.parse(json.replace(/\t/g, ""))
         console.log(parsedJson);
+        tablaCompra.clear();
         extractInformation(parsedJson)
         return false;
     });
 
     function extractEnterpriseInformation(enterpriseInfo) {
-        console.log(enterpriseInfo);
+        $("#nombreEmpresa").html("<b>Nombre: </b>"+enterpriseInfo.name);
+        $("#telefonoEmpresa").html("<b>Teléfono: </b>" +enterpriseInfo.phone);
+        $("#emailEmpresa").html("<b>Correo: </b>" +enterpriseInfo.email);
+        $("#direccionEmpresa").html("<b>Dirección: </b>" +enterpriseInfo.address);
     }
 
     function extractCustomerInformation(customerInfo) {
-        console.log(customerInfo);
+        $("#nombreCliente").html("<b>Nombre: </b>" + customerInfo.name);
+        $("#telefonoCliente").html("<b>Teléfono: </b>" + customerInfo.phone);
+        $("#contactoCliente").html("<b>Contacto: </b>" + customerInfo.contact);
     }
 
     function extractProductsInformation(productsInfo) {
@@ -143,6 +150,17 @@ $().ready(function () {
 
     function extractInvoiceInformation(invoiceInfo) {
         console.log(invoiceInfo)
+        $("#idFactura").html("<b>ID: </b>" + invoiceInfo.id);
+        $("#fechaFactura").html("<b>Fecha: </b>" + invoiceInfo.date);
+        var libreImpuestos = "";
+        if (invoiceInfo.taxFree) {
+            libreImpuestos = "Sí";
+        } else {
+            libreImpuestos = "No";
+        }
+        $("#libreImpuestos").html("<b>Libre de Impuestos: </b>" + libreImpuestos);
+        tax = invoiceInfo.tax;
+        $("#taxCell").html(tax);
     }
 
 
@@ -156,8 +174,9 @@ $().ready(function () {
     function extractInformation(json) {
         extractEnterpriseInformation(json.data.enterprise);
         extractCustomerInformation(json.data.customer);
+        
+        extractInvoiceInformation(json.data.invoice);
         extractProductsInformation(json.data.products);
-        extractInvoiceInformation(json.data.invoice);        
     }
 
     var doc = new jsPDF()
@@ -166,8 +185,62 @@ $().ready(function () {
     doc.text(35, 25, 'Paranyan loves jsPDF')
 
 
+    $('#guardarPDF').click(function () {
+        tablaCompra.column(5).visible(false);
+        
+        
 
+        var pdf = new jsPDF('p', 'pt', 'letter');
+        var info = pdf.autoTableHtmlToJson(document.getElementById("salesInvoice"), false)
+        // source can be HTML-formatted string, or a reference
+        // to an actual DOM element from which the text will be scraped.
+        source = $('#imprimir')[0];
 
+        // we support special element handlers. Register them with jQuery-style 
+        // ID selector for either ID or node name. ("#iAmID", "div", "span" etc.)
+        // There is no support for any other type of selectors 
+        // (class, of compound) at this time.
+        specialElementHandlers = {
+            // element with id of "bypass" - jQuery style selector
+            '#bypass': function (element, renderer) {
+                // true = "handled elsewhere, bypass text extraction"
+                return true
+            }
+        };
+        margins = {
+            top: 20,
+            bottom: 60,
+            left: 40,
+            width: 522
+        };
+        // all coords and widths are in jsPDF instance's declared units
+        // 'inches' in this case
+        pdf.fromHTML(
+            source, // HTML string or DOM elem ref.
+            margins.left, // x coord
+            margins.top, { // y coord
+                'width': margins.width, // max width of content on PDF
+                'elementHandlers': specialElementHandlers
+            },
+
+            function (dispose) {
+                // dispose: object with X, Y of the last line add to the PDF 
+                //          this allow the insertion of new lines after html
+                pdf.autoTable(info.columns, info.rows, {
+                    startY: 400,
+                    tableWidth: 'auto', // 'auto', 'wrap' or a number, 
+                    styles: {
+                        overflow: 'linebreak',
+                        halign: 'left', // left, center, right
+                        valign: 'middle', // top, middle, bottom
+                        columnWidth: 'auto'
+                    }
+                });
+                pdf.save('table.pdf');
+            }, margins);              
+
+        tablaCompra.column(5).visible(true);
+    });
 }); 
 
 
