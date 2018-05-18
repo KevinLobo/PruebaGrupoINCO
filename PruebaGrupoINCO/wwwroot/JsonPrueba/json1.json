@@ -1,0 +1,37 @@
+﻿{
+	"code":400,
+	"description":"success",
+	"data":	{
+		"enterprise":{
+		"name":"Grupo Inco",
+		"phone":"+506 4000 1075",
+		"email":"administrativo@grupoincocr.com",
+		"address":"Oficentro Ejecutivo La Sabana, Edificio 2"
+		},
+		"customer":{
+			"name":"Clinica MediSalud",
+			"phone":"+506 2222 3900",
+			"contact":"info@medisalud.com"
+		},
+		"products":[
+		{
+			"name":"Seguridad informática",
+			"description":"Servicio para fortalecer la seguridad en sistemas informáticos",
+			"price":15000
+		},
+		{
+			"name":"Restablecimiento de la BD",
+			"description":"Servicio para restablecer un backup en sistemas informáticos",
+			"price":35000
+		}
+		],
+		"invoice":{
+			"date":"2018-05-05",
+			"id":430,
+			"subtotal":50000,
+			"tax":2500,
+			"tax free":0,
+			"total":52500
+		}
+	}
+}

@@ -1,6 +1,6 @@
 {
 	"code":400,
-	"description":"success",
+	"description":"failed",
 	"data":	{
 		"enterprise":{
 		"name":"Grupo Inco",
@@ -16,14 +16,12 @@
 		"products":[
 		{
 			"name":"Seguridad informática",
-			"description":"Servicio para fortalecer la seguridad en sistemas
-			informáticos",
+			"description":"Servicio para fortalecer la seguridad en sistemas informáticos",
 			"price":15000
 		},
 		{
 			"name":"Restablecimiento de la BD",
-			"description":"Servicio para restablecer un backup en sistemas
-			informáticos",
+			"description":"Servicio para restablecer un backup en sistemas informáticos",
 			"price":35000
 		}
 		],

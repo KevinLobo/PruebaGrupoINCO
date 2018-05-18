@@ -1,0 +1,47 @@
+{
+	"code":400,
+	"description":"success",
+	"data":	{
+		"enterprise":{
+		"name":"Square Systems",
+		"phone":"+506 8756 4534",
+		"email":"desarrollo@square.com",
+		"address":"600 metros Sureste de la Iglesia de la Soledad"
+		},
+		"customer":{
+			"name":"Jorge Gonzalez",
+			"phone":"+506 6574 5637",
+			"contact":"jorge.gonzalez@gmail.com"
+		},
+		"products":[
+		{
+			"name":"Seguridad informática",
+			"description":"Servicio para fortalecer la seguridad en sistemas informáticos",
+			"price":15000
+		},
+		{
+			"name":"Restablecimiento de la BD",
+			"description":"Servicio para restablecer un backup en sistemas informáticos",
+			"price":35000
+		},
+		{
+			"name":"Aseguramiento de la Calidad",
+			"description":"Servicio para asegurar la calidad de un proyecto de software",
+			"price":40000
+		},
+		{
+			"name":"Desarrollo del Software",
+			"description":"Servicio para desarrollar un proyecto de software",
+			"price":55000
+		}
+		],
+		"invoice":{
+			"date":"2018-05-18",
+			"id":445,
+			"subtotal":145000,
+			"tax":7500,
+			"tax free":0,
+			"total":152500
+		}
+	}
+}
